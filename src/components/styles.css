@@ -1,0 +1,58 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Cambiado a min-height para asegurar que el contenedor ocupe al menos el 100% de la altura de la ventana */
+  background-color: #ffffff; /* Fondo blanco */
+  color: #000000; /* Texto negro */
+  overflow-y: auto; /* Agregado para permitir el desplazamiento vertical */
+}
+
+.content {
+  text-align: center;
+}
+
+.title {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.image img {
+  width: 300px; /* Ajusta el ancho según sea necesario */
+  height: auto; /* Para mantener la proporción */
+  margin-bottom: 30px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.input {
+  width: 300px; /* Ancho del campo de texto */
+  padding: 10px;
+  margin-bottom: 10px; /* Espacio inferior entre campos de texto */
+  border: none;
+  border-radius: 20px; /* Bordes ovalados */
+  background-color: #f0f0f0; /* Color de fondo del campo de texto */
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  margin: 10px;
+  text-decoration: none;
+  color: #fff; /* Texto blanco */
+  background-color: #6a1b9a; /* Morado más oscuro */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #491278; /* Morado aún más oscuro */
+}
