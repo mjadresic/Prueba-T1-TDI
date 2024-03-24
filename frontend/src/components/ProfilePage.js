@@ -13,7 +13,7 @@ const ProfilePage = () => {
     const fetchData = async () => {
       try {
         // Obtener datos del usuario
-        const userResponse = await fetch(`http://localhost:8000/users/${userId}`);
+        const userResponse = await fetch(`https://prueba-t1-tdi.onrender.com/users/${userId}`);
         if (!userResponse.ok) {
           throw new Error('Failed to fetch user data');
         }
@@ -21,7 +21,7 @@ const ProfilePage = () => {
         setUser(userData);
   
         // Obtener publicaciones del usuario
-        const postsResponse = await fetch(`http://localhost:8000/posts`);
+        const postsResponse = await fetch(`https://prueba-t1-tdi.onrender.com/posts`);
         if (!postsResponse.ok) {
           throw new Error('Failed to fetch user posts');
         }
@@ -31,7 +31,7 @@ const ProfilePage = () => {
         
         // Obtener el nombre de usuario para cada publicación
         for (const post of userPosts) {
-          const userPostResponse = await fetch(`http://localhost:8000/users/${post.userId}`);
+          const userPostResponse = await fetch(`https://prueba-t1-tdi.onrender.com/users/${post.userId}`);
           if (!userPostResponse.ok) {
             throw new Error(`Failed to fetch user data for post ${post.id}`);
           }
@@ -47,7 +47,7 @@ const ProfilePage = () => {
         const comments = {};
         for (const post of userPosts) {
           console.log(`Fetching comments for post ${post.id}`);
-          const commentsResponse = await fetch(`http://localhost:8000/posts/${post.id}/comments`);
+          const commentsResponse = await fetch(`https://prueba-t1-tdi.onrender.com/posts/${post.id}/comments`);
           console.log(commentsResponse);
           if (!commentsResponse.ok) {
             throw new Error(`Failed to fetch comments for post ${post.id}`);
@@ -56,7 +56,7 @@ const ProfilePage = () => {
           
           // Obtener el nombre de usuario para cada comentario
           for (const comment of postComments) {
-            const commentUserResponse = await fetch(`http://localhost:8000/users/${comment.userId}`);
+            const commentUserResponse = await fetch(`https://prueba-t1-tdi.onrender.com/users/${comment.userId}`);
             if (!commentUserResponse.ok) {
               throw new Error(`Failed to fetch user data for comment ${comment.id}`);
             }
@@ -91,7 +91,7 @@ const ProfilePage = () => {
   
       console.log('Request body:', commentData); // Imprimir el cuerpo de la solicitud en la consola
       
-      const response = await fetch(`http://localhost:8000/posts/${postId}/comments`, {
+      const response = await fetch(`https://prueba-t1-tdi.onrender.com/posts/${postId}/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -131,7 +131,7 @@ const ProfilePage = () => {
 
   const fetchUsernameById = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:8000/users/${userId}`);
+      const response = await fetch(`https://prueba-t1-tdi.onrender.com/users/${userId}`);
       if (!response.ok) {
         throw new Error('Failed to fetch user data');
       }

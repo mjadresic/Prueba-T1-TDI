@@ -8,7 +8,7 @@ const LandingPage = () => {
   // Función para resetear datos
   const handleReset = async () => {
     try {
-      const response = await fetch('http://localhost:8000/reset', {
+      const response = await fetch('https://prueba-t1-tdi.onrender.com/reset', {
         method: 'POST',
       }); 
       if (response.ok) {
@@ -24,7 +24,7 @@ const LandingPage = () => {
   // Función para poblar datos
   const handlePopulate = async () => {
     try {
-      const response = await fetch('http://localhost:8000/populate', {
+      const response = await fetch('https://prueba-t1-tdi.onrender.com/populate', {
         method: 'POST',
       }); 
       if (response.ok) {

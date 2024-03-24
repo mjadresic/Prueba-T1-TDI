@@ -21,7 +21,7 @@ const HomePage = () => {
 
   const fetchAllPosts = async () => {
     try {
-      const response = await fetch('http://localhost:8000/posts');
+      const response = await fetch('https://prueba-t1-tdi.onrender.com/posts');
       if (!response.ok) {
         throw new Error('Failed to fetch All posts');
       }
@@ -30,7 +30,7 @@ const HomePage = () => {
       // Obtener los nombres de usuario para cada ID de usuario en los posts
       const postsWithUsernames = await Promise.all(postData.map(async (post) => {
         try {
-          const userResponse = await fetch(`http://localhost:8000/users/${post.userId}`);
+          const userResponse = await fetch(`https://prueba-t1-tdi.onrender.com/users/${post.userId}`);
           if (!userResponse.ok) {
             throw new Error('Failed to fetch user data');
           }
@@ -55,7 +55,7 @@ const HomePage = () => {
       // Obtener comentarios de cada publicación
       const comments = {};
       for (const post of postsWithUsernames) {
-        const commentsResponse = await fetch(`http://localhost:8000/posts/${post.id}/comments`);
+        const commentsResponse = await fetch(`https://prueba-t1-tdi.onrender.com/posts/${post.id}/comments`);
         if (!commentsResponse.ok) {
           throw new Error(`Failed to fetch comments for post ${post.id}`);
         }
@@ -89,7 +89,7 @@ const HomePage = () => {
   // Función para obtener el nombre de usuario por ID
   const fetchUsernameById = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:8000/users/${userId}`);
+      const response = await fetch(`https://prueba-t1-tdi.onrender.com/users/${userId}`);
       if (!response.ok) {
         throw new Error('Failed to fetch user data');
       }
@@ -103,7 +103,7 @@ const HomePage = () => {
 
   const handleSearchPost = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/posts?title=${encodeURIComponent(searchTermPost)}`);
+      const response = await fetch(`https://prueba-t1-tdi.onrender.com/posts?title=${encodeURIComponent(searchTermPost)}`);
       if (!response.ok) {
         throw new Error('Failed to fetch posts');
       }
@@ -125,7 +125,7 @@ const HomePage = () => {
 
   const handleSearchUser = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/users?name=${searchTermUser}`);
+      const response = await fetch(`https://prueba-t1-tdi.onrender.com/users?name=${searchTermUser}`);
       if (!response.ok) {
         if (response.status === 404) {
           setSearchResultsUser([]); // No hay resultados
@@ -157,7 +157,7 @@ const HomePage = () => {
   
       console.log('Request body:', commentData); // Imprimir el cuerpo de la solicitud en la consola
       
-      const response = await fetch(`http://localhost:8000/posts/${postId}/comments`, {
+      const response = await fetch(`https://prueba-t1-tdi.onrender.com/posts/${postId}/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -202,7 +202,7 @@ const HomePage = () => {
   const createNewPost = async () => {
     try {
 
-      const response = await fetch('http://localhost:8000/posts', {
+      const response = await fetch('https://prueba-t1-tdi.onrender.com/posts', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
