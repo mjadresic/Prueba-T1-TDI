@@ -1,12 +1,11 @@
 from typing import Union, List, Optional
 from datetime import datetime, timedelta
-from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-from schemas import User, Post, Comment, CreateUserRequest, LoginRequest, LoginResponse, CreatePostRequest, CreateCommentRequest
+from .schemas import User, Post, Comment, CreateUserRequest, LoginRequest, LoginResponse, CreatePostRequest, CreateCommentRequest
 import random
-import string
-import time
+
 
 app = FastAPI()
 
