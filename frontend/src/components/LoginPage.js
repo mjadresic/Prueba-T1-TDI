@@ -12,7 +12,7 @@ const LoginPage = () => {
     e.preventDefault(); 
 
     try {
-      const response = await fetch('https://prueba-t1-tdi.onrender.com/login', {
+      const response = await fetch('https://tarea-1-mjadresic.onrender.com/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

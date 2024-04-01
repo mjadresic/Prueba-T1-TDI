@@ -12,7 +12,7 @@ const RegisterPage = () => {
     e.preventDefault(); 
 
     try {
-      const response = await fetch('https://prueba-t1-tdi.onrender.com/users', {
+      const response = await fetch('https://tarea-1-mjadresic.onrender.com/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

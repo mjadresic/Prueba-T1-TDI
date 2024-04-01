@@ -13,7 +13,7 @@ const ProfilePage = () => {
     const fetchData = async () => {
       try {
         // Obtener datos del usuario
-        const userResponse = await fetch(`https://prueba-t1-tdi.onrender.com/users/${userId}`);
+        const userResponse = await fetch(`https://tarea-1-mjadresic.onrender.com/users/${userId}`);
         if (!userResponse.ok) {
           throw new Error('Failed to fetch user data');
         }
@@ -21,49 +21,49 @@ const ProfilePage = () => {
         setUser(userData);
   
         // Obtener publicaciones del usuario
-        const postsResponse = await fetch(`https://prueba-t1-tdi.onrender.com/posts`);
+        const postsResponse = await fetch(`https://tarea-1-mjadresic.onrender.com/posts`);
         if (!postsResponse.ok) {
           throw new Error('Failed to fetch user posts');
         }
-
+  
         const allPosts = await postsResponse.json();
         const userPosts = allPosts.filter(post => post.userId === parseInt(userId));
-        
+  
         // Obtener el nombre de usuario para cada publicación
         for (const post of userPosts) {
-          const userPostResponse = await fetch(`https://prueba-t1-tdi.onrender.com/users/${post.userId}`);
+          const userPostResponse = await fetch(`https://tarea-1-mjadresic.onrender.com/users/${post.userId}`);
           if (!userPostResponse.ok) {
             throw new Error(`Failed to fetch user data for post ${post.id}`);
           }
           const postUserData = await userPostResponse.json();
           post.username = postUserData.username; // Asignar el nombre de usuario a la publicación
         }
-        
+  
         // Ordenar las publicaciones de más nuevas a más viejas
         userPosts.sort((a, b) => new Date(b.created) - new Date(a.created));
         setPosts(userPosts);
-        
+  
         // Obtener comentarios de las publicaciones
         const comments = {};
         for (const post of userPosts) {
           console.log(`Fetching comments for post ${post.id}`);
-          const commentsResponse = await fetch(`https://prueba-t1-tdi.onrender.com/posts/${post.id}/comments`);
+          const commentsResponse = await fetch(`https://tarea-1-mjadresic.onrender.com/posts/${post.id}/comments`);
           console.log(commentsResponse);
           if (!commentsResponse.ok) {
             throw new Error(`Failed to fetch comments for post ${post.id}`);
           }
           const postComments = await commentsResponse.json();
-          
+  
           // Obtener el nombre de usuario para cada comentario
           for (const comment of postComments) {
-            const commentUserResponse = await fetch(`https://prueba-t1-tdi.onrender.com/users/${comment.userId}`);
+            const commentUserResponse = await fetch(`https://tarea-1-mjadresic.onrender.com/users/${comment.userId}`);
             if (!commentUserResponse.ok) {
               throw new Error(`Failed to fetch user data for comment ${comment.id}`);
             }
             const commentUserData = await commentUserResponse.json();
             comment.username = commentUserData.username; // Asignar el nombre de usuario al comentario
           }
-
+  
           comments[post.id] = postComments;
         }
         setPostComments(comments);
@@ -91,7 +91,7 @@ const ProfilePage = () => {
   
       console.log('Request body:', commentData); // Imprimir el cuerpo de la solicitud en la consola
       
-      const response = await fetch(`https://prueba-t1-tdi.onrender.com/posts/${postId}/comments`, {
+      const response = await fetch(`https://tarea-1-mjadresic.onrender.com/posts/${postId}/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -131,7 +131,7 @@ const ProfilePage = () => {
 
   const fetchUsernameById = async (userId) => {
     try {
-      const response = await fetch(`https://prueba-t1-tdi.onrender.com/users/${userId}`);
+      const response = await fetch(`https://tarea-1-mjadresic.onrender.com/users/${userId}`);
       if (!response.ok) {
         throw new Error('Failed to fetch user data');
       }
@@ -179,6 +179,7 @@ const ProfilePage = () => {
                   <p>Descripción: {post.content}</p>
                   <p>Autor: <Link to={`/users/${post.userId}`}>{post.username}</Link></p>
                   {post.image && <img src={post.image} alt="Post" className="image" style={{ maxWidth: '100%', maxHeight: '200px' }} />}
+                  <p>Fecha de creación: {post.created}</p> 
                 </div>
               </div>
               <div className="comments-container">
@@ -186,7 +187,15 @@ const ProfilePage = () => {
                 <div className="comments-list">
                   {postComments[post.id] && postComments[post.id].map((comment) => (
                     <div key={comment.id}>
-                      <p><strong><Link to={`/users/${comment.userId}`}>{comment.username || 'Loading...'}</Link>:</strong> {comment.content}</p>
+                      <p>
+                        <strong>
+                          <Link to={`/users/${comment.userId}`}>
+                            <img src={comment.userAvatar} alt="Avatar" style={{ maxWidth: '30px', maxHeight: '30px', marginRight: '5px', borderRadius: '50%' }} />
+                            {comment.username || 'Loading...'}
+                          </Link>
+                        </strong>: {comment.content}
+                      </p>
+                      <p>Fecha de creación: {comment.created}</p>
                     </div>
                   ))}
                 </div>

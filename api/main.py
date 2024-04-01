@@ -37,10 +37,6 @@ async def create_user(user_data: CreateUserRequest):
     # Verificar que se proporcionen todos los parámetros requeridos
     if not user_data.username:
         raise HTTPException(status_code=400, detail="missing parameter: username")
-    if not user_data.password:
-        raise HTTPException(status_code=400, detail="missing parameter: password")
-    if not user_data.avatar:
-        raise HTTPException(status_code=400, detail="missing parameter: avatar")
 
     # Verificar si el nombre de usuario ya existe
     if user_data.username in users_db:
@@ -106,13 +102,9 @@ async def get_user_by_id(user_id: int):
 @app.post("/posts", status_code=201, response_model=Post)
 async def create_post(post_data: CreatePostRequest):
 
-    if not post_data.title:
-        raise HTTPException(status_code=400, detail="missing parameter: title")
     if not post_data.content:
         raise HTTPException(status_code=400, detail="missing parameter: content")
-    if not post_data.image:
-        raise HTTPException(status_code=400, detail="missing parameter: image")
-    
+
 
     user_found = False
     for user_data in users_db.values():
@@ -162,6 +154,42 @@ async def create_comment(comment_data: CreateCommentRequest):
     # Verificar que se proporcionen todos los parámetros requeridos
     if not comment_data.content:
         raise HTTPException(status_code=400, detail="missing parameter: content")
+
+
+    # Verificar que el post exista
+    if comment_data.postId not in posts_db:
+        raise HTTPException(status_code=404, detail=f"post with id {comment_data.postId} not found")
+
+    user_found = False
+    for user_data in users_db.values():
+        if user_data.get("id") == comment_data.userId:
+            user_found = True
+            break
+
+    if not user_found:
+        raise HTTPException(status_code=404, detail=f"user with id {comment_data.userId} not found")
+
+    # Crear el comentario
+    comment_id = len(comments_db) + 1
+    created_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    new_comment = Comment(
+        id=comment_id,
+        content=comment_data.content,
+        userId=comment_data.userId,
+        postId=comment_data.postId,
+        created=created_date
+    )
+    comments_db[comment_id] = new_comment
+    return new_comment
+
+
+# Crear comentario SIN POST ID -> Pedido por enunciado
+@app.post("/comments", status_code=201)
+async def create_comment(comment_data: CreateCommentRequest):
+
+    # Verificar que se proporcionen todos los parámetros requeridos
+    if not comment_data.content:
+        raise HTTPException(status_code=400, detail="missing parameter: content")
     if not comment_data.userId:
         raise HTTPException(status_code=400, detail="missing parameter: userId")
     if not comment_data.postId:
@@ -193,6 +221,8 @@ async def create_comment(comment_data: CreateCommentRequest):
     comments_db[comment_id] = new_comment
     return new_comment
 
+
+
 #OBTENER COMENTARIOS
 @app.get("/posts/{post_id}/comments", response_model=List[Comment])
 async def get_comments(post_id: int):
@@ -213,6 +243,8 @@ async def get_comments(post_id: int):
 @app.get("/comments", response_model=List[Comment])
 async def get_comments():
     return list(comments_db.values())
+
+
 
 
 # Endpoint para resetear datos
