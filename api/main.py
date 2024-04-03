@@ -35,7 +35,7 @@ class UserInDB(User):
 @app.post("/users", status_code=201, response_model=User)
 async def create_user(user_data: CreateUserRequest):
     # Verificar que se proporcionen todos los parámetros requeridos
-    if not user_data.username:
+    if user_data.username is None or not user_data.username or not hasattr(user_data, 'username'):
         raise HTTPException(status_code=400, detail="missing parameter: username")
 
     # Verificar si el nombre de usuario ya existe
@@ -66,9 +66,9 @@ def authenticate_user(username: str, password: str):
 async def login_user(login_data: LoginRequest):
 
     # Verificar que se proporcionen todos los parámetros requeridos
-    if not login_data.username:
+    if not hasattr(login_data, 'username') or not login_data.username:
         raise HTTPException(status_code=400, detail="missing parameter: username")
-    if not login_data.password:
+    if not hasattr(login_data, 'password') or not login_data.password:
         raise HTTPException(status_code=400, detail="missing parameter: password")
 
     # Verificar si el usuario existe en la base de datos
@@ -102,8 +102,9 @@ async def get_user_by_id(user_id: int):
 @app.post("/posts", status_code=201, response_model=Post)
 async def create_post(post_data: CreatePostRequest):
 
-    if not post_data.content:
+    if post_data.content is None or not post_data.content or not hasattr(post_data, 'content'):
         raise HTTPException(status_code=400, detail="missing parameter: content")
+
 
 
     user_found = False
@@ -152,7 +153,7 @@ async def get_posts(title: Optional[str] = None, userId: Optional[int] = None, f
 async def create_comment(comment_data: CreateCommentRequest):
 
     # Verificar que se proporcionen todos los parámetros requeridos
-    if not comment_data.content:
+    if not hasattr(comment_data, 'content') or not comment_data.content or comment_data.content is None:
         raise HTTPException(status_code=400, detail="missing parameter: content")
 
 
@@ -188,12 +189,8 @@ async def create_comment(comment_data: CreateCommentRequest):
 async def create_comment(comment_data: CreateCommentRequest):
 
     # Verificar que se proporcionen todos los parámetros requeridos
-    if not comment_data.content:
+    if not comment_data.content or comment_data.content is None or not hasattr(comment_data, 'content'):
         raise HTTPException(status_code=400, detail="missing parameter: content")
-    if not comment_data.userId:
-        raise HTTPException(status_code=400, detail="missing parameter: userId")
-    if not comment_data.postId:
-        raise HTTPException(status_code=400, detail="missing parameter: postId")
 
     # Verificar que el post exista
     if comment_data.postId not in posts_db:

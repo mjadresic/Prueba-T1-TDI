@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List
+from typing import Optional
 
 
 class User(BaseModel):
@@ -27,7 +27,7 @@ class Comment(BaseModel):
 
 
 class CreateUserRequest(BaseModel):
-    username: str
+    username: Optional[str]
     password: str
     avatar: str
 
@@ -43,14 +43,14 @@ class LoginResponse(BaseModel):
 
 class CreatePostRequest(BaseModel):
     title: str
-    content: str
+    content: Optional[str]
     image: str
     userId: int
 
 
 class CreateCommentRequest(BaseModel):
     postId: int
-    content: str
+    content: Optional[str]
     userId: int
 
 
