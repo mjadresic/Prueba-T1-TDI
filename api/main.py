@@ -35,7 +35,7 @@ class UserInDB(User):
 @app.post("/users", status_code=201, response_model=User)
 async def create_user(user_data: CreateUserRequest):
     # Verificar que se proporcionen todos los parámetros requeridos
-    if user_data.username is None or not user_data.username or not hasattr(user_data, 'username'):
+    if getattr(user_data, 'username', None) is None:
         raise HTTPException(status_code=400, detail="missing parameter: username")
 
     # Verificar si el nombre de usuario ya existe
@@ -102,10 +102,8 @@ async def get_user_by_id(user_id: int):
 @app.post("/posts", status_code=201, response_model=Post)
 async def create_post(post_data: CreatePostRequest):
 
-    if post_data.content is None or not post_data.content or not hasattr(post_data, 'content'):
+    if getattr(post_data, 'title', None) is None:
         raise HTTPException(status_code=400, detail="missing parameter: content")
-
-
 
     user_found = False
     for user_data in users_db.values():
@@ -153,7 +151,7 @@ async def get_posts(title: Optional[str] = None, userId: Optional[int] = None, f
 async def create_comment(comment_data: CreateCommentRequest):
 
     # Verificar que se proporcionen todos los parámetros requeridos
-    if not hasattr(comment_data, 'content') or not comment_data.content or comment_data.content is None:
+    if getattr(comment_data, 'content', None) is None:
         raise HTTPException(status_code=400, detail="missing parameter: content")
 
 
@@ -189,7 +187,7 @@ async def create_comment(comment_data: CreateCommentRequest):
 async def create_comment(comment_data: CreateCommentRequest):
 
     # Verificar que se proporcionen todos los parámetros requeridos
-    if not comment_data.content or comment_data.content is None or not hasattr(comment_data, 'content'):
+    if getattr(comment_data, 'content', None) is None:
         raise HTTPException(status_code=400, detail="missing parameter: content")
 
     # Verificar que el post exista
