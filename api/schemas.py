@@ -42,7 +42,7 @@ class LoginResponse(BaseModel):
 
 
 class CreatePostRequest(BaseModel):
-    title: str
+    title: Optional[str] = None
     content: Optional[str] = None
     image: str
     userId: int

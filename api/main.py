@@ -124,15 +124,24 @@ async def validate_post_data(request: Request):
         raise HTTPException(status_code=400, detail="missing parameter: content")
     elif len(content) == 0:
         raise HTTPException(status_code=400, detail="missing parameter: content")
+    
+    if title is None:
+        raise HTTPException(status_code=400, detail="missing parameter: title")
+    elif not isinstance(title, str):
+        raise HTTPException(status_code=400, detail="missing parameter: title")
+    elif len(title) == 0:
+        raise HTTPException(status_code=400, detail="missing parameter: title")
+    
+    if userId is None:
+        raise HTTPException(status_code=404, detail=f"user with id {userId} does not exist")
+    elif not isinstance(userId, int):
+        raise HTTPException(status_code=404, detail=f"user with id {userId} does not exist")
 
     return CreatePostRequest(title=title, content=content, image=image, userId=userId)
     
 #CREAR POST
 @app.post("/posts", status_code=201, response_model=Post)
 async def create_post(post_data: CreatePostRequest = Depends(validate_post_data)):
-
-    if getattr(post_data, 'title', None) is None:
-        raise HTTPException(status_code=400, detail="missing parameter: content")
 
     user_found = False
     for user_data in users_db.values():
@@ -223,20 +232,24 @@ async def validate_comment_data(request: Request):
         raise HTTPException(status_code=400, detail="missing parameter: content")
     elif len(content) == 0:
         raise HTTPException(status_code=400, detail="missing parameter: content")
+    
+    if postId is None:
+        raise HTTPException(status_code=404, detail=f"post with id {postId} not found")
+    elif not isinstance(postId, int):
+        raise HTTPException(status_code=404, detail=f"post with id {postId} not found")
+    
+    if userId is None:
+        raise HTTPException(status_code=404, detail=f"user with id {userId} not found")
+    elif not isinstance(userId, int):
+        raise HTTPException(status_code=404, detail=f"user with id {userId} not found")
+    
+    
 
     return CreateCommentRequest(content=content, postId=postId, userId=userId)
 
 # Crear comentario SIN POST ID -> Pedido por enunciado
 @app.post("/comments", status_code=201)
 async def create_comment(comment_data: CreateCommentRequest = Depends(validate_comment_data)):
-
-    # Verificar que se proporcionen todos los parámetros requeridos
-    if getattr(comment_data, 'content', None) is None:
-        raise HTTPException(status_code=400, detail="missing parameter: content")
-
-    # Verificar que el post exista
-    if comment_data.postId not in posts_db:
-        raise HTTPException(status_code=404, detail=f"post with id {comment_data.postId} not found")
 
     user_found = False
     for user_data in users_db.values():
