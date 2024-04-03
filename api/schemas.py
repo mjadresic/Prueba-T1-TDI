@@ -27,7 +27,7 @@ class Comment(BaseModel):
 
 
 class CreateUserRequest(BaseModel):
-    username: Optional[str]
+    username: Optional[str] = None
     password: str
     avatar: str
 
@@ -43,14 +43,14 @@ class LoginResponse(BaseModel):
 
 class CreatePostRequest(BaseModel):
     title: str
-    content: Optional[str]
+    content: Optional[str] = None
     image: str
     userId: int
 
 
 class CreateCommentRequest(BaseModel):
     postId: int
-    content: Optional[str]
+    content: Optional[str] = None
     userId: int
 
 
