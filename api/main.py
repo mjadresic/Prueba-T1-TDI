@@ -1,6 +1,6 @@
-from typing import Union, List, Optional
+from typing import List, Optional
 from datetime import datetime, timedelta
-from fastapi import FastAPI, HTTPException, status, Depends, Request
+from fastapi import FastAPI, HTTPException, Depends, Request
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from .schemas import User, Post, Comment, CreateUserRequest, LoginRequest, LoginResponse, CreatePostRequest, CreateCommentRequest
@@ -45,6 +45,7 @@ async def validate_user_data(request: Request):
         raise HTTPException(status_code=400, detail="missing parameter: username")
 
     return CreateUserRequest(username=username, password=password, avatar=avatar)
+    
 
 #CREAR USUARIO
 @app.post("/users", status_code=201, response_model=User)
@@ -113,6 +114,9 @@ async def get_user_by_id(user_id: int):
 async def validate_post_data(request: Request):
     data = await request.json()
     content = data.get("content")
+    title = data.get("title")
+    image = data.get("image")
+    userId = data.get("userId")
 
     if content is None:
         raise HTTPException(status_code=400, detail="missing parameter: content")
@@ -121,7 +125,7 @@ async def validate_post_data(request: Request):
     elif len(content) == 0:
         raise HTTPException(status_code=400, detail="missing parameter: content")
 
-    return CreatePostRequest(content=content)
+    return CreatePostRequest(title=title, content=content, image=image, userId=userId)
     
 #CREAR POST
 @app.post("/posts", status_code=201, response_model=Post)
@@ -210,6 +214,8 @@ async def create_comment(comment_data: CreateCommentRequest):
 async def validate_comment_data(request: Request):
     data = await request.json()
     content = data.get("content")
+    postId = data.get("postId")
+    userId = data.get("userId")
 
     if content is None:
         raise HTTPException(status_code=400, detail="missing parameter: content")
@@ -218,7 +224,7 @@ async def validate_comment_data(request: Request):
     elif len(content) == 0:
         raise HTTPException(status_code=400, detail="missing parameter: content")
 
-    return CreateCommentRequest(content=content)
+    return CreateCommentRequest(content=content, postId=postId, userId=userId)
 
 # Crear comentario SIN POST ID -> Pedido por enunciado
 @app.post("/comments", status_code=201)

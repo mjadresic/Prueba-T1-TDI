@@ -1,6 +1,5 @@
-from pydantic import BaseModel, validator
+from pydantic import BaseModel
 from typing import Optional
-from fastapi import HTTPException
 
 class User(BaseModel):
     id: int
