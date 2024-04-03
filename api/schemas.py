@@ -1,6 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from typing import Optional
-
+from fastapi import HTTPException
 
 class User(BaseModel):
     id: int
@@ -30,6 +30,7 @@ class CreateUserRequest(BaseModel):
     username: Optional[str] = None
     password: str
     avatar: str
+    
 
 
 class LoginRequest(BaseModel):

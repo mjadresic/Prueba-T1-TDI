@@ -1,6 +1,6 @@
 from typing import Union, List, Optional
 from datetime import datetime, timedelta
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, status, Depends, Request
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from .schemas import User, Post, Comment, CreateUserRequest, LoginRequest, LoginResponse, CreatePostRequest, CreateCommentRequest
@@ -31,12 +31,25 @@ class UserInDB(User):
     password: str
 
 
+async def validate_user_data(request: Request):
+    data = await request.json()
+    username = data.get("username")
+    password = data.get("password")
+    avatar = data.get("avatar")
+
+    if username is None:
+        raise HTTPException(status_code=400, detail="missing parameter: username")
+    elif isinstance(username, list):
+        raise HTTPException(status_code=400, detail="missing parameter: username")
+    elif not isinstance(username, str):
+        raise HTTPException(status_code=400, detail="missing parameter: username")
+
+    return CreateUserRequest(username=username, password=password, avatar=avatar)
+
 #CREAR USUARIO
 @app.post("/users", status_code=201, response_model=User)
-async def create_user(user_data: CreateUserRequest):
-    # Verificar que se proporcionen todos los parámetros requeridos
-    if getattr(user_data, 'username', None) is None:
-        raise HTTPException(status_code=400, detail="missing parameter: username")
+# Verificar que se proporcionen todos los parámetros requeridos
+async def create_user(user_data: CreateUserRequest = Depends(validate_user_data)):
 
     # Verificar si el nombre de usuario ya existe
     if user_data.username in users_db:
@@ -97,10 +110,22 @@ async def get_user_by_id(user_id: int):
     raise HTTPException(status_code=404, detail="User not found")
     
 
+async def validate_post_data(request: Request):
+    data = await request.json()
+    content = data.get("content")
 
+    if content is None:
+        raise HTTPException(status_code=400, detail="missing parameter: content")
+    elif not isinstance(content, str):
+        raise HTTPException(status_code=400, detail="missing parameter: content")
+    elif len(content) == 0:
+        raise HTTPException(status_code=400, detail="missing parameter: content")
+
+    return CreatePostRequest(content=content)
+    
 #CREAR POST
 @app.post("/posts", status_code=201, response_model=Post)
-async def create_post(post_data: CreatePostRequest):
+async def create_post(post_data: CreatePostRequest = Depends(validate_post_data)):
 
     if getattr(post_data, 'title', None) is None:
         raise HTTPException(status_code=400, detail="missing parameter: content")
@@ -182,9 +207,22 @@ async def create_comment(comment_data: CreateCommentRequest):
     return new_comment
 
 
+async def validate_comment_data(request: Request):
+    data = await request.json()
+    content = data.get("content")
+
+    if content is None:
+        raise HTTPException(status_code=400, detail="missing parameter: content")
+    elif not isinstance(content, str):
+        raise HTTPException(status_code=400, detail="missing parameter: content")
+    elif len(content) == 0:
+        raise HTTPException(status_code=400, detail="missing parameter: content")
+
+    return CreateCommentRequest(content=content)
+
 # Crear comentario SIN POST ID -> Pedido por enunciado
 @app.post("/comments", status_code=201)
-async def create_comment(comment_data: CreateCommentRequest):
+async def create_comment(comment_data: CreateCommentRequest = Depends(validate_comment_data)):
 
     # Verificar que se proporcionen todos los parámetros requeridos
     if getattr(comment_data, 'content', None) is None:
